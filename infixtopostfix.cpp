@@ -1,81 +1,60 @@
 #include<iostream>
-#include<stack>
 #include<string>
+#include<stack>
 using namespace std;
 
-int prec(char op)
+int pre(char op)
 {
-if (op=='+' || op == '-')
-{
-  return 1; 
-}
-else if  (op=='*' || op == '/')
-{
-  return 2; 
-}
-else if(op=='^')
-{
-  return 3; 
-}
-return 0;
+    if(op == '+'|| op== '-') return 1;
+    if(op == '*'||op== '/') return 2;
+    if(op == '^') return 3;
+    return 0;
 }
 
-bool isOp(char c)
+string ITP(string infix)
 {
-return ( c=='+'|| c=='-'||c=='*'||c=='/'||c=='^');
-}
-
-string infixToPostfix(string infix)
-{
-    stack<char> s;
-    string Postfix;
-    for (int i = 0; i < infix.length(); i++)
+    stack<char>s;
+    string postfix;
+    for(char c: infix)
     {
-        char c = infix[i];
-        if (isalnum(c))
+        if(isalnum(c))
         {
-            Postfix += c;
+            postfix+=c;
         }
-        else if (c == '(')
+        else if (c=='(')
         {
             s.push(c);
         }
-        else if (c == ')') 
+        else if(c==')')
         {
-            while (!s.empty() && s.top() != '(')
+            while(s.top()!='(')
             {
-                Postfix += s.top();
+                postfix+=s.top();
                 s.pop();
-            }
-            if (!s.empty()) 
+            }s.pop();
+        }
+        else
+        {
+            while(!s.empty() && pre(s.top())>= pre(c))
             {
+               postfix+=s.top();
                 s.pop(); 
-            }
-        }
-        else if (isOp(c))
-        {
-            while (!s.empty() && prec(s.top()) >= prec(c))
-            {
-                Postfix += s.top();
-                s.pop();
-            }
-            s.push(c);
+            }s.push(c);
         }
     }
-    while (!s.empty())
+    while(!s.empty())
     {
-        Postfix += s.top();
-        s.pop();
+      postfix+=s.top();
+       s.pop();   
     }
-    return Postfix;
+    return postfix;
 }
 
 int main()
 {
-  string infix;
-  cout<< "Enter an infix expression : ";
-  cin>> infix;
-  string Postfix =infixToPostfix(infix);
-  cout<< "Postfix Expression : "<< Postfix<<endl;
-  return 0;
+    string infix;
+    cout<<"Enter the infix expression: ";
+    cin>>infix;
+    cout<<"Postfix expression: "<<ITP(infix)<<endl;
+    return 0;
 }
